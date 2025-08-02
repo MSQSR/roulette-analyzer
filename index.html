@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roulette Analyzer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #222;
+    }
+    input, button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input {
+      width: 200px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #results {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Roulette Analyzer Tool</h1>
+  <input type="number" id="spinInput" placeholder="Enter number (0-36)" min="0" max="36" />
+  <button onclick="addResult()">Add Result</button>
+  <button onclick="showStats()">Show Stats</button>
+  <div id="results"></div>
+
+  <script>
+    const results = [];
+
+    function addResult() {
+      const input = document.getElementById("spinInput");
+      const value = parseInt(input.value);
+      if (isNaN(value) || value < 0 || value > 36) {
+        alert("Please enter a valid number between 0 and 36.");
+        return;
+      }
+      results.push(value);
+      input.value = "";
+      displayResults();
+    }
+
+    function displayResults() {
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerText = `Results so far: ${results.join(", ")}`;
+    }
+
+    function showStats() {
+      if (results.length === 0) {
+        alert("No data to analyze yet.");
+        return;
+      }
+
+      const freq = {};
+      results.forEach(num => {
+        freq[num] = (freq[num] || 0) + 1;
+      });
+
+      const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+
+      const hot = sorted.slice(-5).reverse();
+      const cold = sorted.slice(0, 5);
+
+      let stats = "\nHot Numbers (Most Frequent):\n";
+      hot.forEach(([num, count]) => {
+        stats += `${num}: ${count} times\n`;
+      });
+
+      stats += "\nCold Numbers (Least Frequent):\n";
+      cold.forEach(([num, count]) => {
+        stats += `${num}: ${count} times\n`;
+      });
+
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerText += "\n\n" + stats;
+    }
+  </script>
+</body>
+</html>
